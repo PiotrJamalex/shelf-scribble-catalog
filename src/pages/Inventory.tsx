@@ -6,6 +6,7 @@ import { ItemForm } from '@/components/ItemForm';
 import { ItemCard } from '@/components/ItemCard';
 import { SearchBar } from '@/components/SearchBar';
 import { InventoryFilters, InventoryFilters as FilterType } from '@/components/InventoryFilters';
+import { PWAInstallPrompt } from '@/components/PWAInstallPrompt';
 import { useInventoryStore } from '@/stores/inventoryStore';
 import { Download, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -118,15 +119,18 @@ export function Inventory() {
         </div>
       </div>
 
+      {/* PWA Install Prompt */}
+      <PWAInstallPrompt />
+
       {/* Karta z informacjami o systemie */}
       <Card className="bg-blue-50 border-blue-200">
         <CardHeader>
           <CardTitle className="text-blue-800 flex items-center gap-2">
             <Download className="h-5 w-5" />
-            System Inwentaryzacji - Gotowy do pobrania
+            System Inwentaryzacji - PWA Ready
           </CardTitle>
           <CardDescription className="text-blue-600">
-            Twój system inwentaryzacji jest w pełni funkcjonalny i można go pobrać jako kopię zapasową
+            Aplikacja jest teraz dostępna jako PWA - można ją zainstalować na pulpicie
           </CardDescription>
         </CardHeader>
         <CardContent>
