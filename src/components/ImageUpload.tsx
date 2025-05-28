@@ -41,6 +41,11 @@ export function ImageUpload({ images, onImagesChange }: ImageUploadProps) {
     onImagesChange(images.filter(img => img !== imageToRemove));
   };
 
+  const triggerFileInput = () => {
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fileInput?.click();
+  };
+
   return (
     <div>
       <Label>Zdjęcia</Label>
@@ -54,7 +59,7 @@ export function ImageUpload({ images, onImagesChange }: ImageUploadProps) {
             onChange={handleFileUpload}
             className="flex-1"
           />
-          <Button type="button" onClick={() => document.querySelector('input[type="file"]')?.click()} size="sm">
+          <Button type="button" onClick={triggerFileInput} size="sm">
             <Upload className="h-3 w-3 mr-1" />
             Plik
           </Button>
