@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -162,10 +161,10 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
             <div>
               <Label>Karton (opcjonalnie)</Label>
               <Select
-                value={formData.location.boxId || ''}
+                value={formData.location.boxId || 'none'}
                 onValueChange={(value) => setFormData(prev => ({
                   ...prev,
-                  location: { ...prev.location, boxId: value || undefined }
+                  location: { ...prev.location, boxId: value === 'none' ? undefined : value }
                 }))}
                 disabled={!selectedShelf}
               >
@@ -173,7 +172,7 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
                   <SelectValue placeholder="Wybierz karton" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Brak kartonu</SelectItem>
+                  <SelectItem value="none">Brak kartonu</SelectItem>
                   {availableBoxes.map((box) => (
                     <SelectItem key={box.id} value={box.id}>
                       {box.name} (#{box.number})
