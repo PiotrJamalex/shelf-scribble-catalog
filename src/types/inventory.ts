@@ -12,7 +12,9 @@ export interface InventoryItem {
 
 export interface ItemLocation {
   shelfId: string;
-  boxId: string | undefined; // zmienione z boxId?: string na boxId: string | undefined
+  boxId: string | undefined;
+  binderId: string | undefined;
+  containerId: string | undefined;
 }
 
 export interface Shelf {
@@ -36,5 +38,24 @@ export interface Box {
   number: number;
   name: string;
   description?: string;
+  color?: string;
+}
+
+export interface Binder {
+  id: string;
+  shelfId: string;
+  number: number;
+  name: string;
+  description?: string;
+  color?: string;
+}
+
+export interface Container {
+  id: string;
+  shelfId: string;
+  number: number;
+  name: string;
+  description?: string;
+  type: string;
   color?: string;
 }

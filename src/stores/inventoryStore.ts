@@ -1,13 +1,15 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { InventoryItem, Rack, Shelf, Box } from '@/types/inventory';
+import { InventoryItem, Rack, Shelf, Box, Binder, Container } from '@/types/inventory';
 
 interface InventoryStore {
   items: InventoryItem[];
   racks: Rack[];
   shelves: Shelf[];
   boxes: Box[];
+  binders: Binder[];
+  containers: Container[];
   
   // Akcje dla przedmiotów
   addItem: (item: Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt'>) => void;
@@ -30,8 +32,18 @@ interface InventoryStore {
   updateBox: (id: string, updates: Partial<Box>) => void;
   deleteBox: (id: string) => void;
   
+  // Akcje dla segregatorów
+  addBinder: (binder: Omit<Binder, 'id'>) => void;
+  updateBinder: (id: string, updates: Partial<Binder>) => void;
+  deleteBinder: (id: string) => void;
+  
+  // Akcje dla innych opakowań
+  addContainer: (container: Omit<Container, 'id'>) => void;
+  updateContainer: (id: string, updates: Partial<Container>) => void;
+  deleteContainer: (id: string) => void;
+  
   // Funkcje pomocnicze
-  getItemsByLocation: (shelfId: string, boxId?: string) => InventoryItem[];
+  getItemsByLocation: (shelfId: string, boxId?: string, binderId?: string, containerId?: string) => InventoryItem[];
   getShelfLocation: (shelfId: string) => string;
 }
 
@@ -42,6 +54,8 @@ export const useInventoryStore = create<InventoryStore>()(
       racks: [],
       shelves: [],
       boxes: [],
+      binders: [],
+      containers: [],
 
       addItem: (itemData) => {
         const newItem: InventoryItem = {
@@ -70,7 +84,7 @@ export const useInventoryStore = create<InventoryStore>()(
       },
 
       searchItems: (query) => {
-        const { items, shelves, racks, boxes } = get();
+        const { items, shelves, racks, boxes, binders, containers } = get();
         const lowerQuery = query.toLowerCase();
         
         return items.filter((item) => {
@@ -82,8 +96,10 @@ export const useInventoryStore = create<InventoryStore>()(
           const shelf = shelves.find(s => s.id === item.location.shelfId);
           const rack = shelf ? racks.find(r => r.id === shelf.rackId) : null;
           const box = item.location.boxId ? boxes.find(b => b.id === item.location.boxId) : null;
+          const binder = item.location.binderId ? binders.find(b => b.id === item.location.binderId) : null;
+          const container = item.location.containerId ? containers.find(c => c.id === item.location.containerId) : null;
           
-          const locationString = `${rack?.name || ''} ${shelf?.number || ''} ${box?.name || ''}`.toLowerCase();
+          const locationString = `${rack?.name || ''} ${shelf?.number || ''} ${box?.name || ''} ${binder?.name || ''} ${container?.name || ''}`.toLowerCase();
           const matchesLocation = locationString.includes(lowerQuery);
           
           return matchesName || matchesDescription || matchesTags || matchesLocation;
@@ -134,6 +150,8 @@ export const useInventoryStore = create<InventoryStore>()(
         set((state) => ({
           shelves: state.shelves.filter((shelf) => shelf.id !== id),
           boxes: state.boxes.filter((box) => box.shelfId !== id),
+          binders: state.binders.filter((binder) => binder.shelfId !== id),
+          containers: state.containers.filter((container) => container.shelfId !== id),
         }));
       },
 
@@ -159,12 +177,58 @@ export const useInventoryStore = create<InventoryStore>()(
         }));
       },
 
-      getItemsByLocation: (shelfId, boxId) => {
+      addBinder: (binderData) => {
+        const newBinder: Binder = {
+          ...binderData,
+          id: crypto.randomUUID(),
+        };
+        set((state) => ({ binders: [...state.binders, newBinder] }));
+      },
+
+      updateBinder: (id, updates) => {
+        set((state) => ({
+          binders: state.binders.map((binder) =>
+            binder.id === id ? { ...binder, ...updates } : binder
+          ),
+        }));
+      },
+
+      deleteBinder: (id) => {
+        set((state) => ({
+          binders: state.binders.filter((binder) => binder.id !== id),
+        }));
+      },
+
+      addContainer: (containerData) => {
+        const newContainer: Container = {
+          ...containerData,
+          id: crypto.randomUUID(),
+        };
+        set((state) => ({ containers: [...state.containers, newContainer] }));
+      },
+
+      updateContainer: (id, updates) => {
+        set((state) => ({
+          containers: state.containers.map((container) =>
+            container.id === id ? { ...container, ...updates } : container
+          ),
+        }));
+      },
+
+      deleteContainer: (id) => {
+        set((state) => ({
+          containers: state.containers.filter((container) => container.id !== id),
+        }));
+      },
+
+      getItemsByLocation: (shelfId, boxId, binderId, containerId) => {
         const { items } = get();
         return items.filter(
           (item) =>
             item.location.shelfId === shelfId &&
-            item.location.boxId === boxId
+            item.location.boxId === boxId &&
+            item.location.binderId === binderId &&
+            item.location.containerId === containerId
         );
       },
 
