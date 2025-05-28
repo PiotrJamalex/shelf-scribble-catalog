@@ -1,73 +1,120 @@
-# Welcome to your Lovable project
 
-## Project info
+# System Inwentaryzacji
 
-**URL**: https://lovable.dev/projects/a258df76-91f8-49ad-8b96-7c9c98845790
+Kompleksowy system do inwentaryzacji rzeczy, książek, dokumentów i innych przedmiotów z hierarchiczną organizacją przestrzeni.
 
-## How can I edit this code?
+## Funkcjonalności
 
-There are several ways of editing your application.
+### 🏗️ Hierarchiczna organizacja przestrzeni
+- **Regały** - numerowane regały z nazwami i opisami
+- **Półki** - numerowane półki przypisane do regałów  
+- **Kartony** - opcjonalne kartony na półkach z numerami i kolorami
 
-**Use Lovable**
+### 📦 Zarządzanie przedmiotami
+- Dodawanie, edytowanie i usuwanie przedmiotów
+- Szczegółowe opisy z możliwością dodawania tagów
+- Przypisywanie lokalizacji (regał → półka → karton opcjonalnie)
+- Dodawanie wielu zdjęć (URL)
+- Historia zmian z datami utworzenia i modyfikacji
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a258df76-91f8-49ad-8b96-7c9c98845790) and start prompting.
+### 🔍 Zaawansowane wyszukiwanie
+- Wyszukiwanie po nazwie, opisie, tagach
+- Wyszukiwanie po lokalizacji (regał, półka, karton)
+- Filtrowanie wyników w czasie rzeczywistym
+- Zliczanie znalezionych przedmiotów
 
-Changes made via Lovable will be committed automatically to this repo.
+### 💾 Lokalne przechowywanie danych
+- Wszystkie dane przechowywane lokalnie w przeglądarce
+- Brak potrzeby połączenia z internetem do działania
+- Automatyczne zapisywanie zmian
+- Możliwość eksportu/importu danych
 
-**Use your preferred IDE**
+## Instalacja i uruchomienie
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Wymagania
+- Node.js (wersja 16 lub nowsza)
+- npm lub yarn
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Instalacja
+1. Pobierz pliki projektu
+2. Otwórz terminal w katalogu projektu
+3. Zainstaluj zależności:
+```bash
+npm install
+```
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### Uruchomienie
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Aplikacja będzie dostępna pod adresem `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Budowanie dla produkcji
+```bash
+npm run build
+```
 
-**Use GitHub Codespaces**
+Pliki gotowe do wdrożenia znajdą się w katalogu `dist/`
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Instrukcja użytkowania
 
-## What technologies are used for this project?
+### 1. Pierwsze uruchomienie
+- Przejdź do sekcji "Zarządzanie" 
+- Dodaj pierwszy regał z nazwą i numerem
+- Dodaj półki do regału
+- Opcjonalnie dodaj kartony na półkach
 
-This project is built with:
+### 2. Dodawanie przedmiotów
+- Przejdź do sekcji "Inwentarz"
+- Kliknij "Dodaj przedmiot"
+- Wypełnij formularz z nazwą, opisem
+- Wybierz lokalizację (regał → półka → karton)
+- Dodaj tagi dla łatwiejszego wyszukiwania
+- Dodaj zdjęcia poprzez URL
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### 3. Wyszukiwanie
+- Użyj paska wyszukiwania w sekcji "Inwentarz"
+- Wpisz fragment nazwy, opisu, tagu lub lokalizacji
+- Wyniki są filtrowane automatycznie
 
-## How can I deploy this project?
+### 4. Edycja przedmiotów
+- Kliknij "Edytuj" na karcie przedmiotu
+- Zmień potrzebne informacje
+- Zapisz zmiany
 
-Simply open [Lovable](https://lovable.dev/projects/a258df76-91f8-49ad-8b96-7c9c98845790) and click on Share -> Publish.
+## Struktura danych
 
-## Can I connect a custom domain to my Lovable project?
+### Przedmiot
+- Unikalne ID
+- Nazwa i opis
+- Lista tagów
+- Lista zdjęć (URL)
+- Lokalizacja (ID półki + opcjonalnie ID kartonu)
+- Daty utworzenia i ostatniej modyfikacji
 
-Yes, you can!
+### Lokalizacje
+- **Regał**: ID, numer, nazwa, opis
+- **Półka**: ID, numer, ID regału, opis  
+- **Karton**: ID, numer, nazwa, ID półki, opis, kolor
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Technologie
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- **React 18** - framework UI
+- **TypeScript** - typowanie
+- **Tailwind CSS** - stylowanie
+- **Shadcn/ui** - komponenty UI
+- **Zustand** - zarządzanie stanem
+- **React Router** - routing
+- **Vite** - bundler i serwer deweloperski
+
+## Backup i migracja danych
+
+Dane są przechowywane lokalnie w przeglądarce. W przyszłych wersjach planowane są funkcje:
+- Eksport danych do pliku JSON
+- Import danych z pliku
+- Synchronizacja między urządzeniami
+
+## Wsparcie
+
+System jest gotowy do użytku lokalnego. Wszystkie dane są przechowywane bezpiecznie w przeglądarce i nie są wysyłane do zewnętrznych serwerów.
