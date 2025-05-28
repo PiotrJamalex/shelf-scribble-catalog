@@ -1,37 +1,67 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ItemForm } from '@/components/ItemForm';
 import { ItemCard } from '@/components/ItemCard';
 import { SearchBar } from '@/components/SearchBar';
-import { InventoryFilters } from '@/components/InventoryFilters';
+import { InventoryFilters, InventoryFilters as FilterType } from '@/components/InventoryFilters';
 import { useInventoryStore } from '@/stores/inventoryStore';
 import { Download, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { InventoryItem } from '@/types/inventory';
 
 export function Inventory() {
   const [showForm, setShowForm] = useState(false);
+  const [editingItem, setEditingItem] = useState<InventoryItem | undefined>(undefined);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState('');
-  const { items, categories, locations } = useInventoryStore();
+  const [filters, setFilters] = useState<FilterType>({});
+  const { items, racks, shelves, boxes, binders, containers } = useInventoryStore();
   const { toast } = useToast();
 
   const filteredItems = items.filter(item => {
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = !selectedCategory || item.category === selectedCategory;
-    const matchesLocation = !selectedLocation || item.location === selectedLocation;
+    // Search filter
+    const matchesSearch = searchTerm === '' || 
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
     
-    return matchesSearch && matchesCategory && matchesLocation;
+    // Location filters
+    let matchesFilters = true;
+    
+    if (filters.rackId) {
+      const shelf = shelves.find(s => s.id === item.location.shelfId);
+      matchesFilters = matchesFilters && shelf?.rackId === filters.rackId;
+    }
+    
+    if (filters.shelfId) {
+      matchesFilters = matchesFilters && item.location.shelfId === filters.shelfId;
+    }
+    
+    if (filters.boxId) {
+      matchesFilters = matchesFilters && item.location.boxId === filters.boxId;
+    }
+    
+    if (filters.binderId) {
+      matchesFilters = matchesFilters && item.location.binderId === filters.binderId;
+    }
+    
+    if (filters.containerId) {
+      matchesFilters = matchesFilters && item.location.containerId === filters.containerId;
+    }
+    
+    return matchesSearch && matchesFilters;
   });
 
   const handleDownload = () => {
     // Create a downloadable version of the app
     const appData = {
       items,
-      categories,
-      locations,
+      racks,
+      shelves,
+      boxes,
+      binders,
+      containers,
       timestamp: new Date().toISOString(),
       version: '1.0.0'
     };
@@ -54,6 +84,21 @@ export function Inventory() {
     });
   };
 
+  const handleEditItem = (item: InventoryItem) => {
+    setEditingItem(item);
+    setShowForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setEditingItem(undefined);
+  };
+
+  const handleAddNew = () => {
+    setEditingItem(undefined);
+    setShowForm(true);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -66,7 +111,7 @@ export function Inventory() {
             <Download className="h-4 w-4" />
             Pobierz system
           </Button>
-          <Button onClick={() => setShowForm(true)} className="flex items-center gap-2">
+          <Button onClick={handleAddNew} className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             Dodaj przedmiot
           </Button>
@@ -86,7 +131,7 @@ export function Inventory() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-blue-700 mb-3">
-            Aktualnie masz <strong>{items.length}</strong> przedmiotów w {categories.length} kategoriach
+            Aktualnie masz <strong>{items.length}</strong> przedmiotów w {racks.length} regałach
           </p>
           <Button onClick={handleDownload} className="bg-blue-600 hover:bg-blue-700">
             <Download className="h-4 w-4 mr-2" />
@@ -96,24 +141,17 @@ export function Inventory() {
       </Card>
 
       <SearchBar 
-        searchTerm={searchTerm} 
-        onSearchChange={setSearchTerm} 
+        value={searchTerm} 
+        onChange={setSearchTerm} 
       />
 
       <InventoryFilters
-        categories={categories}
-        locations={locations}
-        selectedCategory={selectedCategory}
-        selectedLocation={selectedLocation}
-        onCategoryChange={setSelectedCategory}
-        onLocationChange={setSelectedLocation}
+        onFiltersChange={setFilters}
       />
 
-      
-      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredItems.map((item) => (
-          <ItemCard key={item.id} item={item} />
+          <ItemCard key={item.id} item={item} onEdit={handleEditItem} />
         ))}
       </div>
 
@@ -129,8 +167,9 @@ export function Inventory() {
       )}
 
       <ItemForm 
-        open={showForm} 
-        onOpenChange={setShowForm}
+        isOpen={showForm} 
+        onClose={handleCloseForm}
+        item={editingItem}
       />
     </div>
   );
