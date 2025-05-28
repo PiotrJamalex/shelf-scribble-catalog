@@ -12,7 +12,7 @@ export interface InventoryItem {
 
 export interface ItemLocation {
   shelfId: string;
-  boxId?: string; // opcjonalne jeśli przedmiot jest luźno na półce
+  boxId: string | undefined; // zmienione z boxId?: string na boxId: string | undefined
 }
 
 export interface Shelf {
