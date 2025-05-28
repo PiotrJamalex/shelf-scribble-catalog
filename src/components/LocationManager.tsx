@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -125,7 +124,7 @@ export function LocationManager() {
           onClick={() => setActiveTab('containers')}
         >
           <Package className="h-4 w-4 mr-2" />
-          Inne opakowania
+          Inne opakowanie
         </Button>
       </div>
 

@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { X, Plus } from 'lucide-react';
 import { InventoryItem } from '@/types/inventory';
 import { useInventoryStore } from '@/stores/inventoryStore';
+import { ImageUpload } from '@/components/ImageUpload';
 
 interface ItemFormProps {
   isOpen: boolean;
@@ -33,7 +34,6 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
   });
   
   const [newTag, setNewTag] = useState('');
-  const [newImage, setNewImage] = useState('');
 
   useEffect(() => {
     if (item) {
@@ -86,23 +86,6 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
     setFormData(prev => ({
       ...prev,
       tags: prev.tags.filter(tag => tag !== tagToRemove)
-    }));
-  };
-
-  const addImage = () => {
-    if (newImage.trim()) {
-      setFormData(prev => ({
-        ...prev,
-        images: [...prev.images, newImage.trim()]
-      }));
-      setNewImage('');
-    }
-  };
-
-  const removeImage = (imageToRemove: string) => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.filter(img => img !== imageToRemove)
     }));
   };
 
@@ -261,40 +244,10 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
             </div>
           </div>
 
-          <div>
-            <Label>Zdjęcia (URL)</Label>
-            <div className="flex gap-2 mb-2">
-              <Input
-                value={newImage}
-                onChange={(e) => setNewImage(e.target.value)}
-                placeholder="Dodaj URL zdjęcia"
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addImage())}
-              />
-              <Button type="button" onClick={addImage} size="sm">
-                <Plus className="h-3 w-3" />
-              </Button>
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              {formData.images.map((image, index) => (
-                <div key={index} className="relative">
-                  <img
-                    src={image}
-                    alt={`Zdjęcie ${index + 1}`}
-                    className="w-full h-20 object-cover rounded"
-                  />
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="sm"
-                    className="absolute top-1 right-1 h-6 w-6 p-0"
-                    onClick={() => removeImage(image)}
-                  >
-                    <X className="h-3 w-3" />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </div>
+          <ImageUpload
+            images={formData.images}
+            onImagesChange={(images) => setFormData(prev => ({ ...prev, images }))}
+          />
 
           <div className="flex gap-2 pt-4">
             <Button type="submit" className="flex-1">
