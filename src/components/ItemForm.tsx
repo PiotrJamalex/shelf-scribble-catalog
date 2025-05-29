@@ -39,6 +39,7 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
   useEffect(() => {
     if (item) {
       console.log('Editing item:', item);
+      console.log('Item location:', item.location);
       setFormData({
         name: item.name,
         description: item.description,
@@ -47,6 +48,7 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
         location: { ...item.location },
       });
     } else {
+      console.log('Creating new item');
       setFormData({
         name: '',
         description: '',
@@ -66,10 +68,13 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
     e.preventDefault();
     
     console.log('Submitting form data:', formData);
+    console.log('Form location data:', formData.location);
     
     if (item) {
+      console.log('Updating item with ID:', item.id);
       updateItem(item.id, formData);
     } else {
+      console.log('Adding new item');
       addItem(formData);
     }
     
@@ -127,10 +132,13 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
             <Label>Regał i półka *</Label>
             <Select
               value={formData.location.shelfId}
-              onValueChange={(value) => setFormData(prev => ({
-                ...prev,
-                location: { shelfId: value, boxId: undefined, binderId: undefined, containerId: undefined }
-              }))}
+              onValueChange={(value) => {
+                console.log('Shelf selected:', value);
+                setFormData(prev => ({
+                  ...prev,
+                  location: { shelfId: value, boxId: undefined, binderId: undefined, containerId: undefined }
+                }));
+              }}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Wybierz półkę" />
@@ -154,10 +162,12 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
               <Select
                 value={formData.location.boxId || 'none'}
                 onValueChange={(value) => {
-                  console.log('Box selected:', value);
+                  console.log('Box selected - raw value:', value);
+                  const newBoxId = value === 'none' ? undefined : value;
+                  console.log('Box selected - processed value:', newBoxId);
                   setFormData(prev => ({
                     ...prev,
-                    location: { ...prev.location, boxId: value === 'none' ? undefined : value }
+                    location: { ...prev.location, boxId: newBoxId }
                   }));
                 }}
                 disabled={!selectedShelf}
@@ -181,10 +191,12 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
               <Select
                 value={formData.location.binderId || 'none'}
                 onValueChange={(value) => {
-                  console.log('Binder selected:', value);
+                  console.log('Binder selected - raw value:', value);
+                  const newBinderId = value === 'none' ? undefined : value;
+                  console.log('Binder selected - processed value:', newBinderId);
                   setFormData(prev => ({
                     ...prev,
-                    location: { ...prev.location, binderId: value === 'none' ? undefined : value }
+                    location: { ...prev.location, binderId: newBinderId }
                   }));
                 }}
                 disabled={!selectedShelf}
@@ -208,10 +220,12 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
               <Select
                 value={formData.location.containerId || 'none'}
                 onValueChange={(value) => {
-                  console.log('Container selected:', value);
+                  console.log('Container selected - raw value:', value);
+                  const newContainerId = value === 'none' ? undefined : value;
+                  console.log('Container selected - processed value:', newContainerId);
                   setFormData(prev => ({
                     ...prev,
-                    location: { ...prev.location, containerId: value === 'none' ? undefined : value }
+                    location: { ...prev.location, containerId: newContainerId }
                   }));
                 }}
                 disabled={!selectedShelf}
