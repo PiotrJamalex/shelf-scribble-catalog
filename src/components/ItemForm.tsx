@@ -152,12 +152,12 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
             <div>
               <Label>Karton (opcjonalnie)</Label>
               <Select
-                value={formData.location.boxId || ''}
+                value={formData.location.boxId || 'none'}
                 onValueChange={(value) => {
                   console.log('Box selected:', value);
                   setFormData(prev => ({
                     ...prev,
-                    location: { ...prev.location, boxId: value || undefined }
+                    location: { ...prev.location, boxId: value === 'none' ? undefined : value }
                   }));
                 }}
                 disabled={!selectedShelf}
@@ -166,7 +166,7 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
                   <SelectValue placeholder="Wybierz karton" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Brak kartonu</SelectItem>
+                  <SelectItem value="none">Brak kartonu</SelectItem>
                   {availableBoxes.map((box) => (
                     <SelectItem key={box.id} value={box.id}>
                       {box.name} (#{box.number})
@@ -179,12 +179,12 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
             <div>
               <Label>Segregator (opcjonalnie)</Label>
               <Select
-                value={formData.location.binderId || ''}
+                value={formData.location.binderId || 'none'}
                 onValueChange={(value) => {
                   console.log('Binder selected:', value);
                   setFormData(prev => ({
                     ...prev,
-                    location: { ...prev.location, binderId: value || undefined }
+                    location: { ...prev.location, binderId: value === 'none' ? undefined : value }
                   }));
                 }}
                 disabled={!selectedShelf}
@@ -193,7 +193,7 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
                   <SelectValue placeholder="Wybierz segregator" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Brak segregatora</SelectItem>
+                  <SelectItem value="none">Brak segregatora</SelectItem>
                   {availableBinders.map((binder) => (
                     <SelectItem key={binder.id} value={binder.id}>
                       {binder.name} (#{binder.number})
@@ -206,12 +206,12 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
             <div>
               <Label>Inne opakowanie (opcjonalnie)</Label>
               <Select
-                value={formData.location.containerId || ''}
+                value={formData.location.containerId || 'none'}
                 onValueChange={(value) => {
                   console.log('Container selected:', value);
                   setFormData(prev => ({
                     ...prev,
-                    location: { ...prev.location, containerId: value || undefined }
+                    location: { ...prev.location, containerId: value === 'none' ? undefined : value }
                   }));
                 }}
                 disabled={!selectedShelf}
@@ -220,7 +220,7 @@ export function ItemForm({ isOpen, onClose, item }: ItemFormProps) {
                   <SelectValue placeholder="Wybierz opakowanie" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Brak opakowania</SelectItem>
+                  <SelectItem value="none">Brak opakowania</SelectItem>
                   {availableContainers.map((container) => (
                     <SelectItem key={container.id} value={container.id}>
                       {container.name} - {container.type} (#{container.number})
